@@ -14,16 +14,16 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 	/*
 	 * This nested class contains a completed implementation of Position
 	 * which you should use within LinkedPositionalList.
-	 * 
+	 *
 	 * You do not need to edit the nested class.
 	 */
 	protected class Node<E> implements Position<E> {
-		
+
 		private Node<E> parent;
 		private Node<E> left;
 		private Node<E> right;
 		private E element;
-		
+
 		public Node(E element) {
 			this.element = element;
 			this.parent = null;
@@ -47,15 +47,15 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 		public void setRight(Node<E> right) {this.right = right;}
 		public void setElement(E element) {this.element = element;}
 	} //end of nested class
-	
+
 	private Node<E> root;
 	private int size;
-	
+
 	public LinkedBinaryTree() {
 		root = null;
 		size = 0;
 	}
-	
+
 	@Override
 	public Position<E> left(Position<E> p) {
 		Node<E> node = (Node<E>)p;
@@ -129,7 +129,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 	public boolean isEmpty() {
 		return size == 0;
 	}
-	
+
 	//add a root to an empty tree
 	public Position<E> addRoot(E e) {
 		//if the tree is not empty, throw an exception
@@ -141,7 +141,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 		size = 1;
 		return root;
 	}
-	
+
 	/**
 	 * Creates a new left child of Position p storing element e and returns its
 	 * Position.
@@ -220,7 +220,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 	 */
 	public E remove(Position<E> p) throws IllegalArgumentException {
 		Node<E> node = (Node<E>)p;
-		
+
 		//get the child
 		if(numChildren(p) == 2) {
 			throw new IllegalArgumentException("p has two children");
@@ -231,7 +231,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 		if(child == null) {
 			child = node.getRight();
 		}
-		
+
 		if(child != null) {
 			//child's grandparent becomes it's parent
 			child.setParent(node.getParent());
@@ -248,12 +248,12 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 				parent.setRight(child);
 			}
 		}
-		
+
 		size -= 1;
 
 		return node.getElement();
 	}
-	
+
 	/**
 	 * Attaches trees t1 and t2, respectively, as the left and right subtree of
 	 * the leaf Position p. As a side effect, t1 and t2 are set to empty trees.
@@ -283,7 +283,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 			t1.root = null;
 			t1.size = 0;
 		}
-		
+
 		// attach t2 as right subtree of node
 		if (!t2.isEmpty()) {
 			t2.root.setParent(node);
@@ -292,9 +292,9 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 			t2.size = 0;
 		}
 	}
-	
 
-	
+
+
 	// ----------- TUTORIAL exercise 1 -----------
 	/** Returns the number of leaf nodes */
 	public int countLeaves() {
@@ -311,7 +311,6 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
 		if (isExternal(p)) {
 			// TODO: code for the base case (nodes without children)
-			
 		} else {
 			//code for the recursive case (nodes with children)
 			if (node.getLeft() != null) {
@@ -320,7 +319,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 			}
 			if (node.getRight() != null) {
 				// TODO: if there is a right child
-				
+
 			}
 		}
 		return numLeaves;
@@ -337,15 +336,53 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 	/** Returns a mirrored copy of the tree */
 	public LinkedBinaryTree<E> mirror() {
 		LinkedBinaryTree<E> reversed = new LinkedBinaryTree<E>();
-		// TODO: implement this
+		if(this.root == null){
+			return reversed;
+		}
+		reversed.addRoot(this.root.getElement());
+		copy(this.root, reversed.root);
+		reversed.reverseMe();
 		return reversed;
 	}
+
+	public void copy(Position<E> p, Position<E> q){
+		Node<E> root = (Node<E>) p;
+		Node<E> coRoot = (Node<E>) q;
+		if(root == null){
+			return;
+		}
+		Node<E> left = root.getLeft();
+		Node<E> right= root.getRight();
+		coRoot.setElement(root.getElement());
+		copy(right,coRoot.addLeft(right,right.getElement()));
+		copy(left,coRoot.addRight(left,left.getElement()));
+
+		}
+
+
+
+
 
 	// ----------- TUTORIAL exercise 4 -----------
 	/** Reverses the tree */
 	public void reverseMe() {
-		// TODO: implement this
+		if(this.root == null){
+			return;
+		}
+		revise(this.root);
+		return ;
 	}
 
-
+public void revise(Position<E> p){
+	Node<E> node = (Node<E>) p;
+	if(node == null){
+		return;
+	}
+	Node<E> left = node.getLeft();
+	Node<E> right = node.getRight();
+	node.setLeft(right);
+	node.setRight(left);
+	revise(node.getLeft());
+	revise(node.getRight());
+}
 }
