@@ -1,14 +1,20 @@
 import java.util.Date;
 import java.util.List;
+import java.util.*;
+import java.text.*;
+
 
 public class Assignment implements SubmissionHistory {
 
 	/**
 	 * Default constructor
 	 */
+	 TreeMap<String, TreeMap<Integer, String>> students = new TreeMap<String, TreeMap<Integer, String>>();
+
 	public Assignment() {
 		// TODO initialise your data structures
 	}
+
 
 	@Override
 	public Integer getBestGrade(String unikey) {
@@ -31,12 +37,30 @@ public class Assignment implements SubmissionHistory {
 	@Override
 	public Submission add(String unikey, Date timestamp, Integer grade) {
 		// TODO Implement this, ideally in better than O(n)
+		if(unikey == null || timestamp == null || grade == null){
+			return null;
+		}
+
+		SimpleDateFormat dt = new SimpleDateFormat("yymmddhhmmss");
+		String s = dt.format(timestamp);
+
+		if(students.get(unikey) == null){
+			TreeMap<Integer, String> tm1 = new TreeMap<Integer, String>();
+			tm1.put(grade, s);
+			students.put(unikey, tm1);
+		}
+		else{
+			students.get(unikey).put(grade, s);
+		}
+//idk
 		return null;
 	}
 
 	@Override
 	public void remove(Submission submission) {
 		// TODO Implement this, ideally in better than O(n)
+
+
 
 	}
 
