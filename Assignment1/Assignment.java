@@ -9,10 +9,32 @@ public class Assignment implements SubmissionHistory {
 	/**
 	 * Default constructor
 	 */
-	 TreeMap<String, TreeMap<Integer, String>> students = new TreeMap<String, TreeMap<Integer, String>>();
+	TreeMap<String, Details> students = new TreeMap<String, Details>();
 
 	public Assignment() {
 		// TODO initialise your data structures
+	}
+
+	private class Handin implements Submission{
+		private String unikey;
+		private Date timestamp;
+		private Integer grade;
+		public String getUnikey(){
+			return unikey;
+		}
+		public Date getTime(){
+			return timestamp;
+		}
+		public Integer getGrade(){
+			return grade;
+		}
+	}
+
+
+	private class Details{
+		public Integer bestGrade;
+		public Integer latestGrade;
+		public TreeMap<Date, String> myGrades;
 	}
 
 
