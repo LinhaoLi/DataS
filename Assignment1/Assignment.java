@@ -126,10 +126,10 @@ public class Assignment implements SubmissionHistory {
 	}
 
 	@Override
-	public Submission add(String unikey, Date timestamp, Integer grade) {
+	public Submission add(String unikey, Date timestamp, Integer grade) throws IllegalArgumentException{
 		// TODO Implement this, ideally in better than O(n)
 		if(unikey == null || timestamp == null || grade == null){
-			return null;
+			throw new IllegalArgumentException("The argument does not exist");
 		}
 		Handin submission = new Handin(unikey, timestamp, grade);
 
