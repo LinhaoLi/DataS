@@ -7,22 +7,24 @@ public class test{
 		try{
 			Assignment myass = new Assignment();
 
-		String date_s = "2016/09/03 09:00:00";
-		String date_d = "2016/09/03 16:00:00";
-		String date_f = "2016/09/03 18:00:00";
+			SimpleDateFormat dt = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 
-		SimpleDateFormat dt = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-		Date date1 = dt.parse(date_s);
-		Date date2 = dt.parse(date_d);
-		Date date3 = dt.parse(date_f);
+			Submission submission = myass.add("aaaa1111", new Date(2000000), 68);
+			submission = myass.add("bbbb1111", new Date(600000), 57);
+			submission = myass.add("aaaa1111", new Date(400000), 10);
+			submission = myass.add("aaaa1111", new Date(1000000), 68);
 
+			submission = myass.add("aaaa1111", new Date(200000), 56);
+			submission = myass.add("bbbb1111", new Date(1600000), 23);
+			submission = myass.add("aaaa1111", new Date(1200000), 80);
+			submission = myass.add("aaaa1111", new Date(800000), 23);
+			submission = myass.add("bbbb1111", new Date(1400000), 40);
+			submission = myass.add("aaaa1111", new Date(1800000), 50);
+			Submission sub = myass.getSubmissionBefore("aaaa1111", new Date(700000));
+			TreeMap<Date, String> myTree = new TreeMap<Date, String>();
+			myTree.put(sub.getTime(),"a");
 
-			Submission submission = myass.add("cccc1234",date2,73);
-			submission = myass.add("aaaa1234",date2,99);
-			submission = myass.add("aaaa1234",date2,60);
-			submission = myass.add("aaaa1234",date3,97);
-			int ge = myass.getBestGrade("460124876");
-			System.out.println(ge);
+			System.out.println(myTree);
 	}
 	catch(Exception e){
 		//stem.out//sdfadsf

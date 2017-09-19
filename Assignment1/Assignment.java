@@ -156,7 +156,7 @@ public class Assignment implements SubmissionHistory {
 			if(thisStudent.bestGrade < grade){
 				thisStudent.bestGrade = grade;
 			}
-			if(timestamp.compareTo(thisStudent.latest) > 0){
+			if(timestamp.compareTo(thisStudent.latest) >= 0){
 				thisStudent.latestGrade = grade;
 				thisStudent.latest = timestamp;
 			}
