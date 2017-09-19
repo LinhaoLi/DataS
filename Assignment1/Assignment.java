@@ -65,7 +65,7 @@ public class Assignment implements SubmissionHistory {
 		public Integer bestGrade;
 		public Date latest;
 		public TreeMap<Date,  Handin> sortedDates;
-		public TreeMap<Integer, Handin> sortedGrades;
+		public TreeMap<Integer, TreeMap<Date,Handin>> sortedGrades;
 	}
 
 
@@ -139,10 +139,11 @@ public class Assignment implements SubmissionHistory {
 			dts.latestGrade = grade;
 			dts.latest = timestamp;
 			dts.sortedDates = new TreeMap<Date,  Handin>();
-			dts.sortedGrades = new TreeMap<Integer, Handin>();
-
+			dts.sortedGrades = new TreeMap<Integer, TreeMap<Date, Handin>>();
+			TreeMap<Date,Handin> sameGrades = new TreeMap<Date,Handin>();
+			Handin garbage = sameGrades.put(timestamp, submission);
 			Handin oldSubmission1 = dts.sortedDates.put(timestamp, submission);
-			Handin oldSubmission2 = dts.sortedGrades.put(grade, submission);
+			TreeMap<Date,Handin> oldSubmission2 = dts.sortedGrades.put(grade, sameGrades);
 			Details oldSubmission3 = this.students.put(unikey, dts);
 		}
 		else{
@@ -155,7 +156,16 @@ public class Assignment implements SubmissionHistory {
 				thisStudent.latest = timestamp;
 			}
 			Handin oldSubmission1 = thisStudent.sortedDates.put(timestamp, submission);
-			Handin oldSubmission2 = thisStudent.sortedGrades.put(grade, submission);
+			if(!thisStudent.sortedGrades.containsKey(grade)){
+				TreeMap<Date,Handin> sameGrades = new TreeMap<Date,Handin>();
+				Handin garbage = sameGrades.put(timestamp, submission);
+				TreeMap<Date,Handin> oldSubmission2 = thisStudent.sortedGrades.put(grade, sameGrades);
+			}
+			else{
+				TreeMap<Date,Handin> sameGrades = thisStudent.sortedGrades.get(grade);
+				Handin oldSubmission2 = sameGrades.put(timestamp, submission);
+			}
+
 		}
 		return submission;
 	}
@@ -176,8 +186,12 @@ public class Assignment implements SubmissionHistory {
 		Handin removeSubmission = thisStudent.sortedDates.remove(removeTimestamp);
 		thisStudent.latest =  thisStudent.sortedDates.lastKey();
 		thisStudent.latestGrade = thisStudent.sortedDates.get(thisStudent.latest).getGrade();
-		//thisStudent.bestGrade =
 
+		TreeMap<Date,Handin> sameGrades = thisStudent.sortedGrades.get(removeGrade);
+		Handin removeChangeBG = sameGrades.remove(removeTimestamp);
+		if(	removeChangeBG.getGrade() == thisStudent.bestGrade && sameGrades.size()==0){
+			thisStudent.bestGrade = thisStudent.sortedGrades.lastKey();
+		}
 	}
 
 	@Override
@@ -185,20 +199,33 @@ public class Assignment implements SubmissionHistory {
 		// TODO Implement this, ideally in better than O(n)
 		// (you may ignore the length of the list in the analysis)
 		List<String> topStudents = new ArrayList<String>();
-		int best = 0;
-	/*	for(Entry <String, Details> entry: this.students.entrySet()){
+		int best = -1;
+		for(Map.Entry<String, Details> entry: this.students.entrySet()){
 			Details currentDetails = entry.getValue();
 			if(currentDetails.bestGrade > best){
 				best = currentDetails.bestGrade;
+				topStudents.clear();
+				topStudents.add(entry.getKey());
 			}
-		}*/
-		return null;
+			else{
+				topStudents.add(entry.getKey());
+			}
+		}
+		return topStudents;
 	}
 
 	@Override
 	public List<String> listRegressions() {
 		// TODO Implement this, ideally in better than O(n^2)
-		return null;
+		List<String> regressionStudents = new ArrayList<String>();
+		for(Map.Entry<String, Details> entry: this.students.entrySet()){
+			Details currentDetails = entry.getValue();
+			if(currentDetails.bestGrade > currentDetails.latestGrade){
+
+				regressionStudents.add(entry.getKey());
+			}
+		}
+		return regressionStudents;
 	}
 
 }
