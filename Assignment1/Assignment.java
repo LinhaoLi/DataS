@@ -15,7 +15,7 @@ public class Assignment implements SubmissionHistory {
 		this.students = new TreeMap<String, Details>();
 	}
 
-	private class Handin implements Submission{
+	public class Handin implements Submission{
 		private String unikey;
 		private Date timestamp;
 		private Integer grade;
@@ -138,9 +138,12 @@ public class Assignment implements SubmissionHistory {
 			dts.bestGrade = grade;
 			dts.latestGrade = grade;
 			dts.latest = timestamp;
-			dts.sortedDates.put(timestamp, submission);
-			dts.sortedGrades.put(grade, submission);
-			this.students.put(unikey, dts);
+			dts.sortedDates = new TreeMap<Date,  Handin>();
+			dts.sortedGrades = new TreeMap<Integer, Handin>();
+
+			Handin oldSubmission1 = dts.sortedDates.put(timestamp, submission);
+			Handin oldSubmission2 = dts.sortedGrades.put(grade, submission);
+			Details oldSubmission3 = this.students.put(unikey, dts);
 		}
 		else{
 			Details thisStudent = this.students.get(unikey);
@@ -151,8 +154,8 @@ public class Assignment implements SubmissionHistory {
 				thisStudent.latestGrade = grade;
 				thisStudent.latest = timestamp;
 			}
-			thisStudent.sortedDates.put(timestamp, submission);
-			thisStudent.sortedGrades.put(grade, submission);
+			Handin oldSubmission1 = thisStudent.sortedDates.put(timestamp, submission);
+			Handin oldSubmission2 = thisStudent.sortedGrades.put(grade, submission);
 		}
 		return submission;
 	}
@@ -168,9 +171,12 @@ public class Assignment implements SubmissionHistory {
 		Date removeTimestamp = submission.getTime();
 		Integer removeGrade = submission.getGrade();
 
+		Details thisStudent = this.students.get(removeUnikey);
 
-
-
+		Handin removeSubmission = thisStudent.sortedDates.remove(removeTimestamp);
+		thisStudent.latest =  thisStudent.sortedDates.lastKey();
+		thisStudent.latestGrade = thisStudent.sortedDates.get(thisStudent.latest).getGrade();
+		//thisStudent.bestGrade =
 
 	}
 
@@ -178,6 +184,14 @@ public class Assignment implements SubmissionHistory {
 	public List<String> listTopStudents() {
 		// TODO Implement this, ideally in better than O(n)
 		// (you may ignore the length of the list in the analysis)
+		List<String> topStudents = new ArrayList<String>();
+		int best = 0;
+	/*	for(Entry <String, Details> entry: this.students.entrySet()){
+			Details currentDetails = entry.getValue();
+			if(currentDetails.bestGrade > best){
+				best = currentDetails.bestGrade;
+			}
+		}*/
 		return null;
 	}
 
