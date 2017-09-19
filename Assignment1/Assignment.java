@@ -55,8 +55,8 @@ public class Assignment implements SubmissionHistory {
 
 	private class Details{
 		public Details(){
-			bestGrade = -1;
-			latestGrade = -1;
+			bestGrade = null;
+			latestGrade = null;
 			latest = null;
 			sortedDates = null;
 			sortedGrades = null;
@@ -78,7 +78,7 @@ public class Assignment implements SubmissionHistory {
 			return null;
 		}
 		Details thisStudent = this.students.get(unikey);
-		if(thisStudent.bestGrade == -1){
+		if(thisStudent.bestGrade == null){
 			return null;
 		}
 		else{
@@ -97,7 +97,7 @@ public class Assignment implements SubmissionHistory {
 		}
 		Details thisStudent = this.students.get(unikey);
 
-		if(thisStudent.latestGrade == -1){
+		if(thisStudent.latestGrade == null){
 			return null;
 		}
 		else{
@@ -116,11 +116,16 @@ public class Assignment implements SubmissionHistory {
 		}
 		Details thisStudent = this.students.get(unikey);
 
-		if(thisStudent.latestGrade == -1){
+		if(thisStudent.latestGrade == null){
 			return null;
 		}
 		else{
-			return thisStudent.sortedDates.get(thisStudent.sortedDates.floorKey(deadline));
+			Date result = thisStudent.sortedDates.lowerKey(deadline);
+			if(result == null){
+				return null;
+			}else{
+				return thisStudent.sortedDates.get(result);
+			}
 		}
 		// TODO Implement this, ideally in better than O(n)
 	}
@@ -189,7 +194,10 @@ public class Assignment implements SubmissionHistory {
 
 		TreeMap<Date,Handin> sameGrades = thisStudent.sortedGrades.get(removeGrade);
 		Handin removeChangeBG = sameGrades.remove(removeTimestamp);
-		if(	removeChangeBG.getGrade() == thisStudent.bestGrade && sameGrades.size()==0){
+		if(	removeChangeBG.getGrade() == thisStudent.bestGrade){
+			if(sameGrades.size()==0){
+				thisStudent.sortedGrades.remove(removeGrade);
+			}
 			thisStudent.bestGrade = thisStudent.sortedGrades.lastKey();
 		}
 	}
@@ -207,7 +215,7 @@ public class Assignment implements SubmissionHistory {
 				topStudents.clear();
 				topStudents.add(entry.getKey());
 			}
-			else{
+			else if(currentDetails.bestGrade == best){
 				topStudents.add(entry.getKey());
 			}
 		}
