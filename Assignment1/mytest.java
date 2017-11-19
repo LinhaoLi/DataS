@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class mytest{
+public class Mytest{
 
 	// Set up JUnit to be able to check for expected exceptions
 	@Rule
@@ -35,7 +35,7 @@ public class mytest{
 	// helper method to compare two Submissions using assertions
 
 	// Helper method to build the trivial example submission mySub
-	private SubmissionHistory buildExample() {
+	/*private SubmissionHistory buildExample() {
 		SubmissionHistory mySub = new Assignment();
 		// submission A:
 		mySub.add("aaaa1234", getDate("1970/01/01 00:00:01"), 66);
@@ -59,23 +59,49 @@ public class mytest{
 		mySub.add("bbbb1234", getDate("1970/03/03 18:00:00"), 40);
 		return mySub;
 	}
+*/
+
+
+
+	private static void testHelperEquals(Submission expected, Submission actual) {
+		assertEquals(expected.getUnikey(), actual.getUnikey());
+		assertEquals(expected.getTime(), actual.getTime());
+		assertEquals(expected.getGrade(), actual.getGrade());
+	}
+
+	// helper method to compare two Submissions using assertions
+	private static void testHelperEquals(String unikey, Date timestamp, Integer grade, Submission actual) {
+		assertEquals(unikey, actual.getUnikey());
+		assertEquals(timestamp, actual.getTime());
+		assertEquals(grade, actual.getGrade());
+	}
+
+	// helper method that adds a new appointment AND checks the return value is correct
+	private static Submission testHelperAdd(SubmissionHistory history, String unikey, Date timestamp, Integer grade) {
+		Submission s = history.add(unikey, timestamp, grade);
+		testHelperEquals(unikey, timestamp, grade, s);
+		return s;
+	}
 
 
 	//does getSubmissionsBefore work correctly if the submissions were not added in order
 	@Test(timeout = 100)
-	public void testGetBefore_AddUnsorted() {
+	public void testGetBefore_Remove() {
 		SubmissionHistory mySub = new Assignment();
 
 		Submission b = testHelperAdd(mySub, "aaaa1111", new Date(0), 10);
-		Submission j = testHelperAdd(mySub, "aaaa1111", new Date(2), 68);
-		Submission c = testHelperAdd(mySub, "bbbb1111", new Date(60000000), 57);
+		Submission j = testHelperAdd(mySub, "aaaa1111", new Date(3), 68);
+		Submission f = testHelperAdd(mySub, "aaaa1111", new Date(2), 0);
 		Submission e = testHelperAdd(mySub, "aaaa1111", new Date(100000000), 68);
-		Submission h = testHelperAdd(mySub, "bbbb1111", new Date(160000000), 23);
-		Submission f = testHelperAdd(mySub, "aaaa1111", new Date(0), 0);
 
-		testHelperEquals(null, mySub.getSubmissionBefore("aaaa1111", new Date(0)));
+		Submission c = testHelperAdd(mySub, "bbbb1111", new Date(60000000), 57);
+		Submission h = testHelperAdd(mySub, "bbbb1111", new Date(160000000), 23);
+
+		mySub.remove(j);
+
+		testHelperEquals(f, mySub.getSubmissionBefore("aaaa1111", new Date(2)));
 		testHelperEquals(h, mySub.getSubmissionBefore("bbbb1111", new Date(160000001)));
-		testHelperEquals(j, mySub.getSubmissionBefore("aaaa1111", new Date(2)));
+		testHelperEquals(f, mySub.getSubmissionBefore("aaaa1111", new Date(1000000)));
 
 
 	}
@@ -134,7 +160,7 @@ public class mytest{
 
 	//testing a larger example with the regressions method
 	@Test(timeout = 100)
-	public void testMoreTopStudents() {
+	public void testAllTopStudents() {
 		SubmissionHistory mySub = new Assignment();
 		Submission a1 = testHelperAdd(mySub, "a", new Date(100000), 10);
 		Submission b1 = testHelperAdd(mySub, "b", new Date(100000), 10);

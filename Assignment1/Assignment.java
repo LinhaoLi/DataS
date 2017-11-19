@@ -225,7 +225,7 @@ public class Assignment implements SubmissionHistory {
 				return thisStudent.sortedDates.get(result);
 			}
 		}
-		// This function takes (O((log(n) + log(n))*log(n)))= O(log(n)^2) time;
+		// This function takes O(log(n)) time;
 	}
 
 
@@ -321,7 +321,7 @@ public class Assignment implements SubmissionHistory {
 
 		}
 		return submission;
-		//the fuction uses O(log(n)^3);
+		//the fuction uses O(log(n));
 	}
 
 
@@ -368,7 +368,7 @@ public class Assignment implements SubmissionHistory {
 			//
 			thisStudent.bestGrade = thisStudent.sortedGrades.lastKey();
 		}
-		// O(log(n)^3)
+		// O(log(n))
 	}
 
 
@@ -448,6 +448,7 @@ public class Assignment implements SubmissionHistory {
 			}
 		}
 		return regressionStudents;
+		//This function takes O(n) time
 	}
 
 }
